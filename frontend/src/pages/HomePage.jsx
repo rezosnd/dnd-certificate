@@ -100,9 +100,9 @@ const HomePage = () => {
     const copyPostText = () => {
         const frontendUrl = window.location.origin;
         const verifyLink = `${frontendUrl}/verify/${shareData.id}`;
-        const text = `I am thrilled to announce that I have successfully completed 'Decode & Dominate 2.0'! 🚀\n\nIt was an incredible experience that challenged me to solve complex problems and push my technical boundaries. Big thanks to the School of Computer Engineering, KIIT (@School of Computer Engineering, KIIT) and the KIIT Fest organizing committee for this amazing event!\n\nSpecial thanks to VeritasCo (@VeritasCo) for the official digital support and platform navigation. 💻✨\n\nCheck out my official certificate here: ${verifyLink}\n\n#DecodeDominate #SchoolOfComputerEngineering #KIITUniversity #KIITFest #VeritasCo #DigitalExperience #ProblemSolving #TechChallenge`;
+        const text = `I am thrilled to announce that I have successfully completed 𝐃𝐞𝐜𝐨𝐝𝐞 & 𝐃𝐨𝐦𝐢𝐧𝐚𝐭𝐞 𝟐.𝟎! 🚀\n\nIt was an incredible experience that challenged me to solve complex problems and push my technical boundaries. Big thanks to the @School of Computer Engineering, KIIT and the @KIIT Fest organizing committee for this amazing event!\n\nSpecial thanks to @VeritasCo for the official digital support and platform navigation. 💻✨\n\nCheck out my official certificate here: ${verifyLink}\n\n#DecodeDominate #KIITFest #VeritasCo #DigitalExperience #ProblemSolving #TechChallenge`;
         navigator.clipboard.writeText(text);
-        alert('LinkedIn post text copied! You can now paste it directly on your LinkedIn post.');
+        alert('LinkedIn post text copied! \n\nTip: To make the @mentions active (blue), simply delete and re-type the "@" symbol after pasting on LinkedIn.');
     };
 
     const copyLink = () => {
