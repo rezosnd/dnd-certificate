@@ -31,6 +31,38 @@ connectDB();
 app.use('/generate', generateRoute);
 app.use('/verify', verifyRoute);
 
+// Dynamic Social Sharing Route
+app.get('/share/:id', async (req, res) => {
+    const { id } = req.params;
+    try {
+        const result = await sql`SELECT * FROM users WHERE id = ${id}`;
+        if (result.length === 0) return res.status(404).send('Not Found');
+        
+        const user = result[0];
+        const backendUrl = process.env.BACKEND_URL || `https://${req.get('host')}`;
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        
+        // This HTML is only for bots (LinkedIn/WhatsApp). Humans are redirected.
+        res.send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <title>Verified Certificate - ${user.name}</title>
+                <meta property="og:title" content="Verified Certificate | ${user.name}" />
+                <meta property="og:description" content="Official certificate of participation for Decode & Dominate 2.0 finale." />
+                <meta property="og:image" content="${backendUrl}/generate?email=${encodeURIComponent(user.email)}" />
+                <meta property="og:type" content="website" />
+                <meta property="og:url" content="${frontendUrl}/verify/${id}" />
+                <script>window.location.href = "${frontendUrl}/verify/${id}";</script>
+            </head>
+            <body>Redirecting to verification page...</body>
+            </html>
+        `);
+    } catch (err) {
+        res.redirect(process.env.FRONTEND_URL || '/');
+    }
+});
+
 // Root route for health check
 app.get('/', (req, res) => {
     res.json({ message: 'Decode & Dominate 2.0 API is running! 🚀' });

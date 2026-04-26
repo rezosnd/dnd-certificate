@@ -89,9 +89,12 @@ const HomePage = () => {
     };
 
     const handleShare = () => {
-        const frontendUrl = window.location.origin;
-        const verifyLink = `${frontendUrl}/verify/${shareData.id}`;
-        const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(verifyLink)}`;
+        let API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+        if (API_URL.endsWith('/')) API_URL = API_URL.slice(0, -1);
+        
+        // Link to the smart share route on the backend
+        const smartShareLink = `${API_URL}/share/${shareData.id}`;
+        const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(smartShareLink)}`;
         window.open(shareUrl, '_blank');
     };
 

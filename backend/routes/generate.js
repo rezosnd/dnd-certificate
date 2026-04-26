@@ -6,9 +6,17 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 
+router.get('/', async (req, res) => {
+    handleGenerate(req, res);
+});
+
 router.post('/', async (req, res) => {
+    handleGenerate(req, res);
+});
+
+async function handleGenerate(req, res) {
     try {
-        const { email } = req.body;
+        const email = req.body.email || req.query.email;
 
         if (!email) {
             return res.status(400).json({ message: 'Email is required' });
@@ -158,6 +166,6 @@ router.post('/', async (req, res) => {
         console.error('CRITICAL ERROR IN /GENERATE:', error);
         return res.status(500).json({ error: 'Internal Server Error', details: error.message });
     }
-});
+}
 
 module.exports = router;
