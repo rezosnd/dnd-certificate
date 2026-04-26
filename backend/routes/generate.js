@@ -85,11 +85,8 @@ async function handleGenerate(req, res) {
         const kfLogoBase64 = getBase64('kiitfestwatermark.avif');
         const signBase64 = getBase64('roshni maam.avif');
 
-        // Generate QR Code
-        let frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
-        if (frontendUrl.endsWith('/')) {
-            frontendUrl = frontendUrl.slice(0, -1);
-        }
+        // Sanitize FRONTEND_URL accurately (only remove trailing slashes)
+        let frontendUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').trim().replace(/\/+$/, '');
         
         const verifyLink = `${frontendUrl}/verify/${certificateId}`; // frontend link
         const qrDataUrl = await QRCode.toDataURL(verifyLink, {
