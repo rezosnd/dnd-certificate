@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const sql = require('../config/db');
 const QRCode = require('qrcode');
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 

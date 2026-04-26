@@ -116,8 +116,8 @@ const HomePage = () => {
                 <div className="card-body">
                     {!success ? (
                         <>
-                            <h1>Download Your Decode & Dominate 2.0 Certificate...</h1>
-                            <p className="subtitle" style={{ fontSize: '0.9rem', marginBottom: '2.5rem' }}>Official Participation Record</p>
+                            <h1>Download Your Certificate</h1>
+                            <p className="subtitle" style={{ fontSize: '0.9rem', marginBottom: '2.5rem' }}>Decode & Dominate 2.0</p>
 
                             <form onSubmit={handleSubmit} className="form-container">
                                 <div className="input-group">
