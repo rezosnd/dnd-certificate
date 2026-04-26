@@ -219,8 +219,8 @@ async function handleGenerate(req, res) {
                 }
                 footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; }
                 .sig-block { text-align: center; width: 240px; }
-                .sig-img { height: 90px; margin-bottom: 5px; }
-                .sig-line { width: 100%; height: 2px; background: #000; margin-bottom: 8px; }
+                .sig-img { height: 100px; margin-bottom: -15px; position: relative; z-index: 5; }
+                .sig-line { width: 100%; height: 2px; background: #000; margin-bottom: 8px; position: relative; z-index: 1; }
                 .sig-label { font-family: 'Orbitron'; font-size: 11px; font-weight: 800; letter-spacing: 2px; margin: 2px 0; }
                 .qr-block { text-align: center; z-index: 50; background: rgba(241, 248, 255, 0.95); padding: 8px; border-radius: 4px; }
                 .qr-frame { width: 120px; height: 120px; border: 4px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
