@@ -25,8 +25,13 @@ async function handleGenerate(req, res) {
         }
 
         // --- INSTANT CACHE LOGIC ---
+        const cacheDir = path.join(__dirname, '..', 'cache');
+        if (!fs.existsSync(cacheDir)) {
+            fs.mkdirSync(cacheDir, { recursive: true });
+        }
+        
         const emailHash = crypto.createHash('md5').update(email).digest('hex');
-        const cachePath = path.join(__dirname, '..', 'cache', `${emailHash}.jpg`);
+        const cachePath = path.join(cacheDir, `${emailHash}.jpg`);
         
         // If image exists in cache, serve it instantly (LinkedIn needs this for preview)
         if (fs.existsSync(cachePath)) {
@@ -121,8 +126,8 @@ async function handleGenerate(req, res) {
                     </div>
                     <div class="footer">
                         <div class="sign-box">
-                            <img src="https://i.ibb.co/35M5JC2y/AD-Eng-Signature.jpg" alt="Signature">
-                            <p>Authorized Signature</p>
+                            <img src="https://i.ibb.co/fGPhBxM5/roshni-maam.png" alt="Signature">
+                            <p>Dr. ROSHNI PRADHAN</p>
                         </div>
                         <div class="qr-box">
                             <img src="${qrDataUrl}" style="width: 110px;">
