@@ -25,8 +25,13 @@ async function handleGenerate(req, res) {
         }
 
         // --- INSTANT CACHE LOGIC ---
+        const cacheDir = path.join(__dirname, '..', 'cache');
+        if (!fs.existsSync(cacheDir)) {
+            fs.mkdirSync(cacheDir, { recursive: true });
+        }
+        
         const emailHash = crypto.createHash('md5').update(email).digest('hex');
-        const cachePath = path.join(__dirname, '..', 'cache', `${emailHash}.jpg`);
+        const cachePath = path.join(cacheDir, `${emailHash}.jpg`);
         
         // If image exists in cache, serve it instantly (LinkedIn needs this for preview)
         if (fs.existsSync(cachePath)) {
@@ -273,8 +278,17 @@ async function handleGenerate(req, res) {
                 imageBuffer = await page.screenshot({ type: 'jpeg', quality: 95 });
             }
             
-            // SAVE TO CACHE for instant social preview next time
-            fs.writeFileSync(cachePath, imageBuffer);
+            // SAVE TO CACHE for instant social preview next time (Resilient)
+            try {
+                const cacheDir = path.dirname(cachePath);
+                if (!fs.existsSync(cacheDir)) {
+                    fs.mkdirSync(cacheDir, { recursive: true });
+                }
+                fs.writeFileSync(cachePath, imageBuffer);
+                console.log(`✅ Cached certificate for: ${email}`);
+            } catch (cacheErr) {
+                console.warn('⚠️ Cache writing failed (silently skipping):', cacheErr.message);
+            }
 
             // Prepare filename
             const safeName = user.name.replace(/\s+/g, '_');
