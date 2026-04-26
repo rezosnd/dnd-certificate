@@ -46,7 +46,7 @@ app.get('/share/:certId', async (req, res) => {
         const user = result[0];
         const backendUrl = process.env.BACKEND_URL || `https://${req.get('host')}`;
         const rawFrontend = (process.env.FRONTEND_URL || 'http://localhost:5173').trim();
-        const cleanFrontend = `https://${rawFrontend.replace(/^https?:\/\//, '').replace(/\/+$/, '')}`;
+        const cleanFrontend = `https://${rawFrontend.replace(/^(https?:\/\/)+/i, '').replace(/\/+$/, '')}`;
         
         // This HTML is only for bots (LinkedIn/WhatsApp). Humans are redirected.
         res.send(`

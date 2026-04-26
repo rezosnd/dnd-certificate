@@ -91,9 +91,9 @@ async function handleGenerate(req, res) {
         const kfLogoBase64 = getBase64('kiitfestwatermark.avif');
         const signBase64 = getBase64('roshni maam.avif');
 
-        // Robust URL Sanitization: Remove any existing protocol and trailing slashes, then force one clean https://
+        // Robust URL Sanitization: Strip any number of existing protocols (case-insensitive) and force exactly one https://
         let rawUrl = (process.env.FRONTEND_URL || 'http://localhost:5173').trim();
-        let cleanDomain = rawUrl.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+        let cleanDomain = rawUrl.replace(/^(https?:\/\/)+/i, '').replace(/\/+$/, '');
         const verifyLink = `https://${cleanDomain}/verify/${certificateId}`; 
         
         const qrDataUrl = await QRCode.toDataURL(verifyLink, {
