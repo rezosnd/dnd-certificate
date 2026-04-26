@@ -6,6 +6,8 @@ const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 
+const crypto = require('crypto');
+
 router.get('/', async (req, res) => {
     handleGenerate(req, res);
 });
@@ -16,11 +18,22 @@ router.post('/', async (req, res) => {
 
 async function handleGenerate(req, res) {
     try {
-        const email = req.body.email || req.query.email;
+        const email = (req.body.email || req.query.email || '').toLowerCase().trim();
 
         if (!email) {
             return res.status(400).json({ message: 'Email is required' });
         }
+
+        // --- INSTANT CACHE LOGIC ---
+        const emailHash = crypto.createHash('md5').update(email).digest('hex');
+        const cachePath = path.join(__dirname, '..', 'cache', `${emailHash}.jpg`);
+        
+        // If image exists in cache, serve it instantly (LinkedIn needs this for preview)
+        if (fs.existsSync(cachePath)) {
+            console.log(`🚀 Serving cached certificate for: ${email}`);
+            return res.sendFile(cachePath);
+        }
+        // ---------------------------
 
         const users = await sql`SELECT * FROM users WHERE email = ${email}`;
 
@@ -145,6 +158,9 @@ async function handleGenerate(req, res) {
             } else {
                 imageBuffer = await page.screenshot({ type: 'jpeg', quality: 95 });
             }
+            
+            // SAVE TO CACHE for instant social preview next time
+            fs.writeFileSync(cachePath, imageBuffer);
 
             // Prepare filename
             const safeName = user.name.replace(/\s+/g, '_');
