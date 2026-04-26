@@ -61,7 +61,9 @@ async function handleGenerate(req, res) {
         }
 
         const user = users[0];
-        let { certificateId, certificateGenerated } = user;
+        // Handle both camelCase and lowercase from standard Postgres drivers
+        let certificateId = user.certificateId || user.certificateid;
+        let certificateGenerated = user.certificateGenerated || user.certificategenerated;
 
         // If not generated, generate new ID
         if (!certificateGenerated) {
