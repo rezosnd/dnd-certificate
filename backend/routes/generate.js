@@ -289,7 +289,15 @@ async function handleGenerate(req, res) {
             const page = await browser.newPage();
             
             await page.setViewport({ width: 1122, height: 793, deviceScaleFactor: 2 });
-            await page.setContent(htmlSource, { waitUntil: 'networkidle0' });
+            
+            // Use 'load' instead of 'networkidle0' for much faster and more reliable performance
+            await page.setContent(htmlSource, { 
+                waitUntil: 'load',
+                timeout: 60000 
+            });
+
+            // Wait for fonts to be ready specifically
+            await page.evaluateHandle('document.fonts.ready');
 
             const element = await page.$('#cert-container');
             let imageBuffer;
