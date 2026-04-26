@@ -51,18 +51,69 @@ router.post('/', async (req, res) => {
             }
         });
 
-        // Load the HTML template
-        const templatePath = path.join(__dirname, '..', '..', 'certificate_template.html');
-        let htmlSource = fs.readFileSync(templatePath, 'utf8');
+        // Embedded High-Fidelity Certificate Template
+        const htmlTemplate = `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <style>
+                body { margin: 0; padding: 0; background-color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+                #cert-container {
+                    width: 1122px; height: 793px; position: relative;
+                    background: #fff; overflow: hidden; padding: 40px; box-sizing: border-box;
+                    border: 20px solid #f8f9fa;
+                }
+                .watermark {
+                    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg);
+                    height: 70%; opacity: 0.08; z-index: 1; pointer-events: none;
+                }
+                .content { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; border: 2px solid #eee; padding: 20px; }
+                .header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+                .header img { height: 70px; object-fit: contain; }
+                .title { font-size: 54px; font-weight: 800; color: #111; margin: 20px 0 10px 0; letter-spacing: 2px; }
+                .subtitle { font-size: 24px; color: #444; margin-bottom: 40px; font-style: italic; }
+                .participant-name { font-size: 48px; font-weight: 700; color: #000; border-bottom: 3px solid #000; padding: 0 40px 5px 40px; margin-bottom: 20px; text-transform: uppercase; }
+                .event-details { font-size: 18px; color: #555; line-height: 1.6; max-width: 800px; margin-bottom: 40px; }
+                .footer { width: 100%; display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; padding: 0 40px 20px 40px; }
+                .sign-box { text-align: center; }
+                .sign-box img { height: 60px; margin-bottom: 5px; }
+                .sign-box p { font-size: 14px; font-weight: 700; color: #333; margin: 0; text-transform: uppercase; }
+                .qr-box { text-align: center; }
+                .cert-id { font-family: monospace; font-size: 12px; color: #888; margin-top: 5px; border: 1px solid #eee; padding: 2px 8px; border-radius: 4px; }
+            </style>
+        </head>
+        <body>
+            <div id="cert-container">
+                <img src="https://i.ibb.co/S4zFW4z5/file-000000003de07208a2b5c3d4ebf1a0b9.png" class="watermark" alt="watermark">
+                <div class="content">
+                    <div class="header">
+                        <img src="https://i.ibb.co/tpTfk98g/kiit-cse-logo.webp" alt="KIIT Logo">
+                        <img src="https://i.ibb.co/60YDZH3P/kiitfest-wordmark.avif" alt="KIITFEST Logo">
+                    </div>
+                    <div class="title">CERTIFICATE</div>
+                    <div class="subtitle">of Participation</div>
+                    <p style="font-size: 18px; color: #666; margin: 0;">This is to certify that</p>
+                    <div class="participant-name">${user.name}</div>
+                    <div class="event-details">
+                        Successfully participated in <strong>DECODE & DOMINATE 2.0</strong>, a flagship tech challenge organized as part of <strong>KIIT FEST 2026</strong> by the School of Computer Engineering, KIIT University.
+                    </div>
+                    <div class="footer">
+                        <div class="sign-box">
+                            <img src="https://i.ibb.co/35M5JC2y/AD-Eng-Signature.jpg" alt="Signature">
+                            <p>Authorized Signature</p>
+                        </div>
+                        <div class="qr-box">
+                            <img src="${qrDataUrl}" style="width: 110px;">
+                            <div class="cert-id">${certificateId}</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </body>
+        </html>`;
 
-        // String replacements based on the template structure
-        htmlSource = htmlSource.replace('[Participant Name]', user.name);
-        htmlSource = htmlSource.replace('KF-DD2-2026-FINAL', certificateId);
-        
-        // Use regex to replace the QR code source properly
-        // Look for the QR image tag and replace its src
-        const qrRegex = /<img src="https:\/\/api\.qrserver\.com\/v1\/create-qr-code[^>]+>/;
-        htmlSource = htmlSource.replace(qrRegex, `<img src="${qrDataUrl}" style="width: 110px;">`);
+        let htmlSource = htmlTemplate;
 
         // Launch Puppeteer to capture as JPEG
         let browser;
