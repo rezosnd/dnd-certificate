@@ -31,6 +31,11 @@ connectDB();
 app.use('/generate', generateRoute);
 app.use('/verify', verifyRoute);
 
+// Root route for health check
+app.get('/', (req, res) => {
+    res.json({ message: 'Decode & Dominate 2.0 API is running! 🚀' });
+});
+
 app.listen(PORT, () => {
     console.log(`🚀 Server running on port ${PORT}`);
 });

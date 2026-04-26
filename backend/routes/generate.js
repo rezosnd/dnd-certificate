@@ -104,8 +104,8 @@ router.post('/', async (req, res) => {
         }
 
     } catch (error) {
-        console.error('Error in /generate:', error);
-        return res.status(500).json({ message: 'Internal Server Error' });
+        console.error('CRITICAL ERROR IN /GENERATE:', error);
+        return res.status(500).json({ error: 'Internal Server Error', details: error.message });
     }
 });
 

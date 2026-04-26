@@ -22,7 +22,12 @@ const HomePage = () => {
         setLoading(true);
 
         try {
-            const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            let API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+            // Sanitize: Remove trailing slash if present
+            if (API_URL.endsWith('/')) {
+                API_URL = API_URL.slice(0, -1);
+            }
+            
             const response = await axios.post(`${API_URL}/generate`, { email }, {
                 responseType: 'blob'
             });
@@ -66,12 +71,18 @@ const HomePage = () => {
             setShareData({ name: participantName, id: certId });
             setEmail('');
         } catch (err) {
-            if (err.response && err.response.status === 404) {
-                setError('No record found in our database.');
+            console.error('FULL ERROR OBJECT:', err);
+            if (err.response) {
+                if (err.response.status === 404) {
+                    setError('No record found in our database.');
+                } else {
+                    setError(`Server Error (${err.response.status}). Please try again later.`);
+                }
+            } else if (err.request) {
+                setError('Network Error: Cannot reach the backend. Check your VITE_API_URL or CORS settings.');
             } else {
-                setError('An error occurred. Please try again later.');
+                setError('An unexpected error occurred.');
             }
-            console.error(err);
         } finally {
             setLoading(false);
         }
