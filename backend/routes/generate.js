@@ -66,7 +66,11 @@ async function handleGenerate(req, res) {
         }
 
         // Generate QR Code
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        let frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        if (frontendUrl.endsWith('/')) {
+            frontendUrl = frontendUrl.slice(0, -1);
+        }
+        
         const verifyLink = `${frontendUrl}/verify/${certificateId}`; // frontend link
         const qrDataUrl = await QRCode.toDataURL(verifyLink, {
             errorCorrectionLevel: 'H',
@@ -198,7 +202,7 @@ async function handleGenerate(req, res) {
                 }
                 footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; }
                 .sig-block { text-align: center; width: 240px; }
-                .sig-img { height: 75px; margin-bottom: 5px; }
+                .sig-img { height: 90px; margin-bottom: 5px; }
                 .sig-line { width: 100%; height: 2px; background: #000; margin-bottom: 8px; }
                 .sig-label { font-family: 'Orbitron'; font-size: 11px; font-weight: 800; letter-spacing: 2px; margin: 2px 0; }
                 .qr-block { text-align: center; z-index: 50; background: rgba(241, 248, 255, 0.95); padding: 8px; border-radius: 4px; }

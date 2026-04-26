@@ -76,11 +76,12 @@ const VerifyPage = () => {
 
                 <div style={{ marginTop: '2rem', textAlign: 'center' }}>
                     <img 
-                        src="https://i.ibb.co/35M5JC2y/AD-Eng-Signature.jpg" 
+                        src="https://i.ibb.co/fGPhBxM5/roshni-maam.png" 
                         alt="Signature" 
-                        style={{ height: '50px', marginBottom: '0.5rem' }}
+                        style={{ height: '60px', marginBottom: '0.2rem' }}
                     />
-                    <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase' }}>Authorized Signature</p>
+                    <p style={{ fontSize: '0.8rem', color: 'var(--primary-black)', fontWeight: 800, margin: 0 }}>Dr. ROSHNI PRADHAN</p>
+                    <p style={{ fontSize: '0.65rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', marginTop: '0.1rem' }}>Authorized Signature</p>
                 </div>
 
                 <Link to="/" className="submit-btn" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem' }}>
