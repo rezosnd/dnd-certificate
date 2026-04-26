@@ -38,22 +38,6 @@ async function handleGenerate(req, res) {
             return res.status(400).json({ message: 'Email is required' });
         }
 
-        // --- INSTANT CACHE LOGIC ---
-        const cacheDir = path.join(__dirname, '..', 'cache');
-        if (!fs.existsSync(cacheDir)) {
-            fs.mkdirSync(cacheDir, { recursive: true });
-        }
-        
-        const emailHash = crypto.createHash('md5').update(email).digest('hex');
-        const cachePath = path.join(cacheDir, `${emailHash}.jpg`);
-        
-        // If image exists in cache, serve it instantly (LinkedIn needs this for preview)
-        if (fs.existsSync(cachePath)) {
-            console.log(`🚀 Serving cached certificate for: ${email}`);
-            return res.sendFile(cachePath);
-        }
-        // ---------------------------
-
         const users = await sql`SELECT * FROM users WHERE email = ${email}`;
 
         if (users.length === 0) {
@@ -64,6 +48,26 @@ async function handleGenerate(req, res) {
         // Handle both camelCase and lowercase from standard Postgres drivers
         let certificateId = user.certificateId || user.certificateid;
         let certificateGenerated = user.certificateGenerated || user.certificategenerated;
+
+        // --- INSTANT CACHE LOGIC ---
+        const cacheDir = path.join(__dirname, '..', 'cache');
+        if (!fs.existsSync(cacheDir)) {
+            fs.mkdirSync(cacheDir, { recursive: true });
+        }
+        
+        const emailHash = crypto.createHash('md5').update(email).digest('hex');
+        const cachePath = path.join(cacheDir, `${emailHash}.jpg`);
+        
+        // If image exists in cache, serve it instantly with proper headers
+        if (fs.existsSync(cachePath)) {
+            console.log(`🚀 Serving cached certificate for: ${email}`);
+            res.setHeader('Content-Type', 'image/jpeg');
+            res.setHeader('x-participant-name', user.name);
+            res.setHeader('x-certificate-id', certificateId || 'VALID');
+            res.setHeader('Content-Disposition', `attachment; filename="${user.name.replace(/\s+/g, '_')}_dnd2.0.jpg"`);
+            return res.sendFile(cachePath);
+        }
+        // ---------------------------
 
         // If not generated, generate new ID
         if (!certificateGenerated) {

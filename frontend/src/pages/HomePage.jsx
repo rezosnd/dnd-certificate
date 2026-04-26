@@ -33,8 +33,16 @@ const HomePage = () => {
             });
 
             // Extract headers (handle variations in Axios normalization)
+            console.log('--- RESPONSE HEADERS ---', response.headers);
             const participantName = response.headers['x-participant-name'] || response.headers['X-Participant-Name'] || 'Participant';
-            const certId = response.headers['x-certificate-id'] || response.headers['X-Certificate-ID'];
+            let certId = response.headers['x-certificate-id'] || response.headers['X-Certificate-ID'];
+            
+            if (!certId) {
+                console.warn('⚠️ Certificate ID not found in headers, searching in data...');
+                // Fallback: If it's a blob, we can't easily read it, but if it was JSON we could.
+                // Since this only happens on success, we expect the header.
+            }
+
             const contentDisposition = response.headers['content-disposition'] || response.headers['Content-Disposition'];
 
             let cleanName = participantName.replace(/\s+/g, '_').replace(/[^a-zA-Z0-9_]/g, '');

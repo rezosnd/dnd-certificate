@@ -13,7 +13,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 app.use(cors({
     origin: [FRONTEND_URL, 'https://dnd.veritasco.tech', 'http://localhost:5173', 'http://localhost:5174'],
     credentials: true,
-    exposedHeaders: ['X-Participant-Name', 'X-Certificate-ID', 'Content-Disposition']
+    exposedHeaders: ['x-participant-name', 'x-certificate-id', 'X-Participant-Name', 'X-Certificate-ID', 'Content-Disposition', 'content-disposition']
 }));
 app.use(express.json());
 
@@ -32,11 +32,16 @@ app.use('/generate', generateRoute);
 app.use('/verify', verifyRoute);
 
 // Dynamic Social Sharing Route
-app.get('/share/:id', async (req, res) => {
-    const { id } = req.params;
+app.get('/share/:certId', async (req, res) => {
+    const { certId } = req.params;
     try {
-        const result = await sql`SELECT * FROM users WHERE id = ${id}`;
-        if (result.length === 0) return res.status(404).send('Not Found');
+        // Search by certificateId, not DB id
+        const result = await sql`SELECT * FROM users WHERE "certificateId" = ${certId}`;
+        
+        if (result.length === 0) {
+            console.log(`❌ Share query failed: Certificate ${certId} not found`);
+            return res.status(404).send('Certificate Not Found');
+        }
         
         const user = result[0];
         const backendUrl = process.env.BACKEND_URL || `https://${req.get('host')}`;
@@ -50,15 +55,20 @@ app.get('/share/:id', async (req, res) => {
                 <title>Verified Certificate - ${user.name}</title>
                 <meta property="og:title" content="Verified Certificate | ${user.name}" />
                 <meta property="og:description" content="Official certificate of participation for Decode & Dominate 2.0 finale." />
-                <meta property="og:image" content="${backendUrl}/generate?email=${encodeURIComponent(user.email)}" />
+                <meta property="og:image" content="${backendUrl}/generate?email=${encodeURIComponent(user.email)}&img=.jpg" />
+                <meta property="og:image:type" content="image/jpeg" />
+                <meta property="og:image:width" content="1200" />
+                <meta property="og:image:height" content="630" />
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content="${frontendUrl}/verify/${id}" />
-                <script>window.location.href = "${frontendUrl}/verify/${id}";</script>
+                <meta property="og:url" content="${frontendUrl}/verify/${certId}" />
+                <meta name="twitter:card" content="summary_large_image" />
+                <script>window.location.href = "${frontendUrl}/verify/${certId}";</script>
             </head>
             <body>Redirecting to verification page...</body>
             </html>
         `);
     } catch (err) {
+        console.error('Share Route Error:', err);
         res.redirect(process.env.FRONTEND_URL || '/');
     }
 });
