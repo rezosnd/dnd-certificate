@@ -25,13 +25,8 @@ async function handleGenerate(req, res) {
         }
 
         // --- INSTANT CACHE LOGIC ---
-        const cacheDir = path.join(__dirname, '..', 'cache');
-        if (!fs.existsSync(cacheDir)) {
-            fs.mkdirSync(cacheDir, { recursive: true });
-        }
-        
         const emailHash = crypto.createHash('md5').update(email).digest('hex');
-        const cachePath = path.join(cacheDir, `${emailHash}.jpg`);
+        const cachePath = path.join(__dirname, '..', 'cache', `${emailHash}.jpg`);
         
         // If image exists in cache, serve it instantly (LinkedIn needs this for preview)
         if (fs.existsSync(cachePath)) {
@@ -77,63 +72,177 @@ async function handleGenerate(req, res) {
             }
         });
 
-        // Embedded High-Fidelity Certificate Template
+        // Pre-generate binary data for the overlay
+        let binData = "";
+        for(let i=0; i<3000; i++) {
+            binData += (Math.random() > 0.5 ? "0 " : "1 ") + (Math.random() > 0.8 ? "01 " : "");
+        }
+
+        // Restoring User's Refined Design Template - Final Exact Match
         const htmlTemplate = `
         <!DOCTYPE html>
         <html lang="en">
         <head>
             <meta charset="UTF-8">
+            <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Montserrat:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&family=Fira+Code:wght@700&display=swap" rel="stylesheet">
             <style>
-                body { margin: 0; padding: 0; background-color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+                :root {
+                    --kiit-red: #ff2e63;
+                    --deep-navy: #0b1120;
+                    --sky-tint: #f1f8ff;
+                }
+                body { margin: 0; padding: 0; background: #fff; font-family: 'Montserrat', sans-serif; }
                 #cert-container {
-                    width: 1122px; height: 793px; position: relative;
-                    background: #fff; overflow: hidden; padding: 40px; box-sizing: border-box;
-                    border: 20px solid #f8f9fa;
+                    width: 1122px; height: 793px;
+                    background: var(--sky-tint);
+                    position: relative;
+                    display: flex;
+                    overflow: hidden;
+                    box-sizing: border-box;
+                    border: 2px solid #000;
                 }
-                .watermark {
-                    position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-10deg);
-                    height: 70%; opacity: 0.08; z-index: 1; pointer-events: none;
+                .binary-overlay {
+                    position: absolute;
+                    top: 0; left: 0; width: 100%; height: 100%;
+                    font-family: 'Fira Code', monospace;
+                    font-size: 9px;
+                    color: rgba(11, 17, 32, 0.04);
+                    line-height: 1.3;
+                    overflow: hidden;
+                    z-index: 1;
+                    padding: 15px;
+                    word-break: break-all;
+                    pointer-events: none;
                 }
-                .content { position: relative; z-index: 10; height: 100%; display: flex; flex-direction: column; align-items: center; text-align: center; border: 2px solid #eee; padding: 20px; }
-                .header { width: 100%; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-                .header img { height: 70px; object-fit: contain; }
-                .title { font-size: 54px; font-weight: 800; color: #111; margin: 20px 0 10px 0; letter-spacing: 2px; }
-                .subtitle { font-size: 24px; color: #444; margin-bottom: 40px; font-style: italic; }
-                .participant-name { font-size: 48px; font-weight: 700; color: #000; border-bottom: 3px solid #000; padding: 0 40px 5px 40px; margin-bottom: 20px; text-transform: uppercase; }
-                .event-details { font-size: 18px; color: #555; line-height: 1.6; max-width: 800px; margin-bottom: 40px; }
-                .footer { width: 100%; display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; padding: 0 40px 20px 40px; }
-                .sign-box { text-align: center; }
-                .sign-box img { height: 60px; margin-bottom: 5px; }
-                .sign-box p { font-size: 14px; font-weight: 700; color: #333; margin: 0; text-transform: uppercase; }
-                .qr-box { text-align: center; }
-                .cert-id { font-family: monospace; font-size: 12px; color: #888; margin-top: 5px; border: 1px solid #eee; padding: 2px 8px; border-radius: 4px; }
+                .sidebar-strip {
+                    width: 90px; height: 100%;
+                    background: var(--deep-navy);
+                    position: absolute; right: 0;
+                    z-index: 20;
+                    display: flex; align-items: center; justify-content: center;
+                    border-left: 6px solid var(--kiit-red);
+                }
+                .sidebar-text {
+                    writing-mode: vertical-rl;
+                    color: #fff;
+                    font-family: 'Orbitron';
+                    font-size: 30px;
+                    letter-spacing: 18px;
+                    font-weight: 900;
+                    text-transform: uppercase;
+                    opacity: 0.25;
+                    white-space: nowrap;
+                    transform: rotate(180deg);
+                }
+                .main-canvas {
+                    flex-grow: 1;
+                    padding: 30px 140px 30px 70px;
+                    z-index: 10;
+                    display: flex;
+                    flex-direction: column;
+                    position: relative;
+                }
+                header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; }
+                .logo-left { height: 65px; }
+                .logo-right { height: 55px; }
+                .text-center { text-align: center; flex-grow: 1; }
+                h1 {
+                    font-family: 'Orbitron', sans-serif;
+                    font-size: 68px;
+                    font-weight: 900;
+                    color: var(--deep-navy);
+                    margin: 0;
+                    letter-spacing: 12px;
+                }
+                h2 {
+                    font-family: 'Orbitron', sans-serif;
+                    font-size: 22px;
+                    letter-spacing: 10px;
+                    color: var(--kiit-red);
+                    margin: 5px 0 25px 0;
+                }
+                .recipient-name {
+                    font-family: 'Playfair Display', serif;
+                    font-size: 52px;
+                    color: #000;
+                    margin: 10px 0;
+                    display: inline-block;
+                    border-bottom: 4px double var(--kiit-red);
+                    padding: 0 50px 5px 50px;
+                }
+                .event-desc {
+                    font-size: 17px;
+                    line-height: 1.7;
+                    color: #222;
+                    max-width: 85%;
+                    margin: 15px auto;
+                    font-weight: 500;
+                }
+                .appreciation-block {
+                    margin: 15px auto;
+                    padding-top: 15px;
+                    border-top: 2px solid rgba(255, 46, 99, 0.2);
+                    width: 80%;
+                }
+                .appreciation-text {
+                    font-size: 16px;
+                    font-style: italic;
+                    color: #000;
+                    font-weight: 800;
+                    letter-spacing: 0.5px;
+                }
+                footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: auto; }
+                .sig-block { text-align: center; width: 240px; }
+                .sig-img { height: 75px; margin-bottom: 5px; }
+                .sig-line { width: 100%; height: 2px; background: #000; margin-bottom: 8px; }
+                .sig-label { font-family: 'Orbitron'; font-size: 11px; font-weight: 800; letter-spacing: 2px; margin: 2px 0; }
+                .qr-block { text-align: center; z-index: 50; background: rgba(241, 248, 255, 0.95); padding: 8px; border-radius: 4px; }
+                .qr-frame { width: 120px; height: 120px; border: 4px solid #000; background: #fff; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; }
+                .uid-tag { background: #000; color: #fff !important; font-family: 'Fira Code', monospace; font-size: 10px; font-weight: 800; padding: 4px 12px; display: block; letter-spacing: 1px; border-radius: 2px; }
+                .watermark-main { position: absolute; top: 55%; left: 45%; transform: translate(-50%, -50%); width: 450px; opacity: 0.12; z-index: 2; pointer-events: none; }
             </style>
         </head>
         <body>
             <div id="cert-container">
-                <img src="https://i.ibb.co/S4zFW4z5/file-000000003de07208a2b5c3d4ebf1a0b9.png" class="watermark" alt="watermark">
-                <div class="content">
-                    <div class="header">
-                        <img src="https://i.ibb.co/tpTfk98g/kiit-cse-logo.webp" alt="KIIT Logo">
-                        <img src="https://i.ibb.co/60YDZH3P/kiitfest-wordmark.avif" alt="KIITFEST Logo">
-                    </div>
-                    <div class="title">CERTIFICATE</div>
-                    <div class="subtitle">of Participation</div>
-                    <p style="font-size: 18px; color: #666; margin: 0;">This is to certify that</p>
-                    <div class="participant-name">${user.name}</div>
-                    <div class="event-details">
-                        Successfully participated in <strong>DECODE & DOMINATE 2.0</strong>, a flagship tech challenge organized as part of <strong>KIIT FEST 2026</strong> by the School of Computer Engineering, KIIT University.
-                    </div>
-                    <div class="footer">
-                        <div class="sign-box">
-                            <img src="https://i.ibb.co/fGPhBxM5/roshni-maam.png" alt="Signature">
-                            <p>Dr. ROSHNI PRADHAN</p>
+                <div class="binary-overlay">${binData}</div>
+                <img src="https://i.ibb.co/S4zFW4z5/file-000000003de07208a2b5c3d4ebf1a0b9.png" class="watermark-main">
+                <div class="sidebar-strip">
+                    <div class="sidebar-text">DECODE & DOMINATE 2.0</div>
+                </div>
+                <div class="main-canvas">
+                    <header>
+                        <img src="https://i.ibb.co/tpTfk98g/kiit-cse-logo.webp" class="logo-left" alt="KIIT CSE">
+                        <img src="https://i.ibb.co/60YDZH3P/kiitfest-wordmark.avif" class="logo-right" alt="KIIT Fest">
+                    </header>
+                    <div class="text-center">
+                        <h1>CERTIFICATE</h1>
+                        <h2>OF PARTICIPATION</h2>
+                        <p style="font-size: 17px; color: #444; margin-top: 20px; font-weight: 600;">This is to proudly certify the excellence of</p>
+                        <div class="recipient-name">${user.name}</div>
+                        <p class="event-desc">
+                            for participating in <b>“Decode & Dominate 2.0”</b>, the flagship technical event of <b>KIIT Fest 9.0</b>, conducted from <b>March 6th–7th, 2026</b>. The participant showcased outstanding technical proficiency and innovative problem-solving skills throughout the event.
+                        </p>
+                        <div class="appreciation-block">
+                            <div class="appreciation-text">
+                                We applaud their efforts and extend our best wishes for their future endeavors.
+                            </div>
                         </div>
-                        <div class="qr-box">
-                            <img src="${qrDataUrl}" style="width: 110px;">
-                            <div class="cert-id">${certificateId}</div>
-                        </div>
                     </div>
+                    <footer>
+                        <div class="sig-block">
+                            <img src="https://i.ibb.co/fGPhBxM5/roshni-maam.png" class="sig-img">
+                            <div class="sig-line"></div>
+                            <p class="sig-label">CHAIRPERSON | KIIT FEST 9.0</p>
+                            <p style="font-size: 11px; font-weight: 800; margin: 2px 0;">Dr. ROSHNI PRADHAN</p>
+                            <p style="font-size: 12px; color: var(--kiit-red); margin-top: 5px; font-weight: 900;">DATED: 07.03.2026</p>
+                        </div>
+                        <div class="qr-block">
+                            <div class="qr-frame">
+                                <img src="${qrDataUrl}" style="width: 110px;">
+                            </div>
+                            <div class="uid-tag">UID: ${certificateId}</div>
+                        </div>
+                    </footer>
                 </div>
             </div>
         </body>
