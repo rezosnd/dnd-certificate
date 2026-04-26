@@ -1,0 +1,118 @@
+import React, { useEffect, useState } from 'react';
+import { useParams, Link } from 'react-router-dom';
+import axios from 'axios';
+import { Check, X, ArrowLeft } from 'lucide-react';
+
+const VerifyPage = () => {
+    const { id } = useParams();
+    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState(null);
+
+    useEffect(() => {
+        const verifyCertificate = async () => {
+            try {
+                const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
+                const response = await axios.get(`${API_URL}/verify/${id}`);
+                setData(response.data);
+            } catch (err) {
+                console.error(err);
+                setData({ valid: false });
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        verifyCertificate();
+    }, [id]);
+
+    const renderContent = () => {
+        if (loading) {
+            return (
+                <div className="card-body">
+                    <div className="loader" style={{ borderTopColor: 'var(--primary-black)', marginBottom: '1rem' }}></div>
+                    <h1>Validating...</h1>
+                </div>
+            );
+        }
+
+        if (!data || !data.valid) {
+            return (
+                <div className="card-body">
+                    <div className="status-icon error">
+                        <X size={24} />
+                    </div>
+                    <h1>Invalid Certificate</h1>
+                    <p className="subtitle">The certificate ID was not found.</p>
+                    
+                    <Link to="/" className="submit-btn" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '1rem' }}>
+                        <ArrowLeft size={18} /> Back to Portal
+                    </Link>
+                </div>
+            );
+        }
+
+        return (
+            <div className="card-body">
+                <div className="status-icon success">
+                    <Check size={24} />
+                </div>
+                <h1>Verified Original</h1>
+                <p className="subtitle">Official KIIT Event Record</p>
+
+                <div className="verify-details">
+                    <div className="row">
+                        <div className="label">Participant Name</div>
+                        <div className="val">{data.name}</div>
+                    </div>
+                    <div className="row">
+                        <div className="label">Event Name</div>
+                        <div className="val">{data.event}</div>
+                    </div>
+                    <div className="row">
+                        <div className="label">Certificate ID</div>
+                        <div className="val" style={{ color: 'var(--primary-black)', fontWeight: 700 }}>{data.certificateId}</div>
+                    </div>
+                </div>
+
+                <div style={{ marginTop: '2rem', textAlign: 'center' }}>
+                    <img 
+                        src="https://i.ibb.co/35M5JC2y/AD-Eng-Signature.jpg" 
+                        alt="Signature" 
+                        style={{ height: '50px', marginBottom: '0.5rem' }}
+                    />
+                    <p style={{ fontSize: '0.7rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase' }}>Authorized Signature</p>
+                </div>
+
+                <Link to="/" className="submit-btn" style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginTop: '2rem' }}>
+                    <ArrowLeft size={18} /> Return to Portal
+                </Link>
+            </div>
+        );
+    };
+
+    return (
+        <div className="app-container">
+            <main className="main-card">
+                <img 
+                    src="https://i.ibb.co/S4zFW4z5/file-000000003de07208a2b5c3d4ebf1a0b9.png" 
+                    className="card-watermark" 
+                    alt="watermark" 
+                />
+                
+                <header className="card-header">
+                    <img src="https://i.ibb.co/tpTfk98g/kiit-cse-logo.webp" alt="KIIT" />
+                    <img src="https://i.ibb.co/60YDZH3P/kiitfest-wordmark.avif" className="logo-center" alt="KIITFEST" />
+                </header>
+
+                {renderContent()}
+            </main>
+
+            <footer className="page-footer">
+                <p>Designed and Developed by <a href="https://veritasco.tech" target="_blank" rel="noopener noreferrer">veritasco.tech</a></p>
+                <p>© All rights reserved.</p>
+            </footer>
+        </div>
+    );
+};
+
+export default VerifyPage;
