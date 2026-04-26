@@ -5,8 +5,22 @@ const QRCode = require('qrcode');
 const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
-
 const crypto = require('crypto');
+
+// Helper to get Base64 of local assets
+const getBase64 = (fileName) => {
+    try {
+        const filePath = path.join(__dirname, '..', '..', 'frontend', 'public', fileName);
+        if (fs.existsSync(filePath)) {
+            const ext = path.extname(filePath).substring(1);
+            const content = fs.readFileSync(filePath);
+            return `data:image/${ext === 'avif' ? 'avif' : ext};base64,${content.toString('base64')}`;
+        }
+        return '';
+    } catch (e) {
+        return '';
+    }
+};
 
 router.get('/', async (req, res) => {
     handleGenerate(req, res);
@@ -65,6 +79,12 @@ async function handleGenerate(req, res) {
             user.certificateGenerated = true;
         }
 
+        // Prepare Local Assets as Base64 for Certificate
+        const mascotBase64 = getBase64('mascot.png');
+        const kiitLogoBase64 = getBase64('kiit-cse_logo.webp');
+        const kfLogoBase64 = getBase64('kiitfestwatermark.avif');
+        const signBase64 = getBase64('roshni maam.avif');
+
         // Generate QR Code
         let frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
         if (frontendUrl.endsWith('/')) {
@@ -75,10 +95,7 @@ async function handleGenerate(req, res) {
         const qrDataUrl = await QRCode.toDataURL(verifyLink, {
             errorCorrectionLevel: 'H',
             margin: 1,
-            color: {
-                dark: '#000000',
-                light: '#ffffff'
-            }
+            color: { dark: '#000000', light: '#ffffff' }
         });
 
         // Pre-generate binary data for the overlay
@@ -214,14 +231,14 @@ async function handleGenerate(req, res) {
         <body>
             <div id="cert-container">
                 <div class="binary-overlay">${binData}</div>
-                <img src="https://i.ibb.co/S4zFW4z5/file-000000003de07208a2b5c3d4ebf1a0b9.png" class="watermark-main">
+                <img src="${mascotBase64}" class="watermark-main">
                 <div class="sidebar-strip">
                     <div class="sidebar-text">DECODE & DOMINATE 2.0</div>
                 </div>
                 <div class="main-canvas">
                     <header>
-                        <img src="https://i.ibb.co/tpTfk98g/kiit-cse-logo.webp" class="logo-left" alt="KIIT CSE">
-                        <img src="https://i.ibb.co/60YDZH3P/kiitfest-wordmark.avif" class="logo-right" alt="KIIT Fest">
+                        <img src="${kiitLogoBase64}" class="logo-left" alt="KIIT CSE">
+                        <img src="${kfLogoBase64}" class="logo-right" alt="KIIT Fest">
                     </header>
                     <div class="text-center">
                         <h1>CERTIFICATE</h1>
@@ -239,7 +256,7 @@ async function handleGenerate(req, res) {
                     </div>
                     <footer>
                         <div class="sig-block">
-                            <img src="https://i.ibb.co/fGPhBxM5/roshni-maam.png" class="sig-img">
+                            <img src="${signBase64}" class="sig-img">
                             <div class="sig-line"></div>
                             <p class="sig-label">CHAIRPERSON | KIIT FEST 9.0</p>
                             <p style="font-size: 11px; font-weight: 800; margin: 2px 0;">Dr. ROSHNI PRADHAN</p>

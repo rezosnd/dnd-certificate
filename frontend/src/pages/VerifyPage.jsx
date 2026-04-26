@@ -76,7 +76,7 @@ const VerifyPage = () => {
 
                 <div style={{ marginTop: '2rem', textAlign: 'center' }}>
                     <img 
-                        src="https://i.ibb.co/fGPhBxM5/roshni-maam.png" 
+                        src="/roshni maam.avif" 
                         alt="Signature" 
                         style={{ height: '60px', marginBottom: '0.2rem' }}
                     />
@@ -95,14 +95,14 @@ const VerifyPage = () => {
         <div className="app-container">
             <main className="main-card">
                 <img 
-                    src="https://i.ibb.co/S4zFW4z5/file-000000003de07208a2b5c3d4ebf1a0b9.png" 
+                    src="/mascot.png" 
                     className="card-watermark" 
                     alt="watermark" 
                 />
                 
                 <header className="card-header">
-                    <img src="https://i.ibb.co/tpTfk98g/kiit-cse-logo.webp" alt="KIIT" />
-                    <img src="https://i.ibb.co/60YDZH3P/kiitfest-wordmark.avif" className="logo-center" alt="KIITFEST" />
+                    <img src="/kiit-cse_logo.webp" alt="KIIT" />
+                    <img src="/kiitfestwatermark.avif" className="logo-center" alt="KIITFEST" />
                 </header>
 
                 {renderContent()}
