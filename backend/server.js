@@ -45,7 +45,8 @@ app.get('/share/:certId', async (req, res) => {
         
         const user = result[0];
         const backendUrl = process.env.BACKEND_URL || `https://${req.get('host')}`;
-        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const rawFrontend = (process.env.FRONTEND_URL || 'http://localhost:5173').trim();
+        const cleanFrontend = `https://${rawFrontend.replace(/^https?:\/\//, '').replace(/\/+$/, '')}`;
         
         // This HTML is only for bots (LinkedIn/WhatsApp). Humans are redirected.
         res.send(`
@@ -60,9 +61,9 @@ app.get('/share/:certId', async (req, res) => {
                 <meta property="og:image:width" content="1200" />
                 <meta property="og:image:height" content="630" />
                 <meta property="og:type" content="website" />
-                <meta property="og:url" content="${frontendUrl}/verify/${certId}" />
+                <meta property="og:url" content="${cleanFrontend}/verify/${certId}" />
                 <meta name="twitter:card" content="summary_large_image" />
-                <script>window.location.href = "${frontendUrl}/verify/${certId}";</script>
+                <script>window.location.href = "${cleanFrontend}/verify/${certId}";</script>
             </head>
             <body>Redirecting to verification page...</body>
             </html>

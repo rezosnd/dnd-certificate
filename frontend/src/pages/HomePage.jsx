@@ -96,15 +96,6 @@ const HomePage = () => {
         }
     };
 
-    const handleShare = () => {
-        let API_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
-        if (API_URL.endsWith('/')) API_URL = API_URL.slice(0, -1);
-        
-        // Link to the smart share route on the backend
-        const smartShareLink = `${API_URL}/share/${shareData.id}`;
-        const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(smartShareLink)}`;
-        window.open(shareUrl, '_blank');
-    };
 
     const copyPostText = () => {
         const frontendUrl = window.location.origin;
@@ -201,11 +192,41 @@ const HomePage = () => {
                                         </button>
                                     </div>
 
-                                    <div style={{ display: 'flex', gap: '0.75rem' }}>
-                                        <button onClick={handleShare} className="share-btn-primary" style={{ flex: 1, padding: '1rem', fontSize: '1rem' }}>
-                                            Share
-                                        </button>
-                                        <button onClick={copyPostText} className="share-btn-secondary" style={{ flex: 1.5, padding: '1rem', fontSize: '1rem' }}>
+                                    <div style={{ marginTop: '2rem' }}>
+                                        <p style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '0.75rem', fontWeight: 600, letterSpacing: '0.05em' }}>COPY THIS & SHARE ON LINKEDIN</p>
+                                        <div style={{
+                                            background: '#fcfcfd',
+                                            border: '1px solid var(--border-color)',
+                                            borderRadius: '12px',
+                                            padding: '1.25rem',
+                                            textAlign: 'left',
+                                            position: 'relative',
+                                            marginBottom: '1rem'
+                                        }}>
+                                            <p style={{
+                                                fontSize: '0.8rem',
+                                                color: '#444',
+                                                lineHeight: '1.6',
+                                                margin: 0,
+                                                display: '-webkit-box',
+                                                WebkitLineClamp: 4,
+                                                WebkitBoxOrient: 'vertical',
+                                                overflow: 'hidden',
+                                                fontStyle: 'italic'
+                                            }}>
+                                                "I am thrilled to announce that I have completed 'Decode & Dominate 2.0'! 🚀 Check out my official certificate here: {window.location.origin}/verify/{shareData.id}..."
+                                            </p>
+                                            <div style={{
+                                                position: 'absolute',
+                                                bottom: 0,
+                                                left: 0,
+                                                right: 0,
+                                                height: '40px',
+                                                background: 'linear-gradient(transparent, #fcfcfd)',
+                                                borderRadius: '0 0 12px 12px'
+                                            }}></div>
+                                        </div>
+                                        <button onClick={copyPostText} className="submit-btn" style={{ width: '100%', borderRadius: '12px' }}>
                                             Copy Post Text
                                         </button>
                                     </div>
