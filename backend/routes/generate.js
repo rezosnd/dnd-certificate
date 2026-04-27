@@ -61,7 +61,6 @@ async function handleGenerate(req, res) {
         
         const emailHash = crypto.createHash('md5').update(email).digest('hex');
         const winnerInfo = WINNER_TEAMS[email];
-        console.log(`DEBUG: Winner check for ${email}: ${!!winnerInfo}`);
         // If they are a winner, we use a unique cache name to force regeneration if needed
         const cacheFileName = winnerInfo ? `${emailHash}_winner.jpg` : `${emailHash}.jpg`;
         const cachePath = path.join(cacheDir, cacheFileName);
