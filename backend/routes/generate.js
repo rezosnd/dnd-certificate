@@ -249,6 +249,19 @@ async function handleGenerate(req, res) {
                     .qr-frame { border: 3px solid #000; padding: 5px; background: #fff; display: inline-block; margin-bottom: 5px; }
                     .uid-tag { background: #000; color: #fff !important; font-family: 'Fira Code', monospace; font-size: 10px; padding: 4px 12px; border-radius: 2px; display: block; }
                     .watermark-main { position: absolute; top: 55%; left: 45%; transform: translate(-50%, -50%); width: 450px; opacity: 0.12; z-index: 2; pointer-events: none; }
+                    .appreciation-block {
+                        margin: 12px auto 0 auto;
+                        padding-top: 12px;
+                        border-top: 2px solid rgba(255, 46, 99, 0.3);
+                        width: 80%;
+                    }
+                    .appreciation-text {
+                        font-size: 15px;
+                        font-style: italic;
+                        color: #000;
+                        font-weight: 800;
+                        letter-spacing: 0.5px;
+                    }
                 </style>
             </head>
             <body>
@@ -275,6 +288,11 @@ async function handleGenerate(req, res) {
                             <p class="event-desc">
                                 for securing <b>${winnerInfo.rankText}</b> in <b>“Decode & Dominate 2.0”</b>, the flagship technical event of <b>KIIT Fest 9.0</b>. Their innovative solution and exceptional technical execution distinguished them as the top performers of this competition.
                             </p>
+                            <div class="appreciation-block">
+                                <div class="appreciation-text">
+                                    We applaud their efforts and extend our best wishes for their future endeavors.
+                                </div>
+                            </div>
                         </div>
                         <footer>
                             <div class="sig-block">
