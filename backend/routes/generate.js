@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const sql = require('../config/db');
 const QRCode = require('qrcode');
-const puppeteer = require('puppeteer-core');
+const puppeteer = require('puppeteer');
 const fs = require('fs');
 const path = require('path');
 const crypto = require('crypto');
@@ -470,22 +470,14 @@ async function handleGenerate(req, res) {
         // Launch Puppeteer to capture as JPEG
         let browser;
         try {
-            const isProd = process.env.NODE_ENV === 'production';
-            const LINUX_CHROME_PATHS = [
-                '/usr/bin/chromium-browser',
-                '/usr/bin/chromium',
-                '/usr/bin/google-chrome',
-                '/usr/bin/google-chrome-stable',
-                '/snap/bin/chromium',
-            ];
-            const findLinuxExecutable = () => LINUX_CHROME_PATHS.find(p => fs.existsSync(p)) || null;
-            const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH ||
-                (isProd ? findLinuxExecutable() : 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe');
-            browser = await puppeteer.launch({
-                executablePath,
+            const launchOptions = {
                 headless: true,
                 args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
-            });
+            };
+            if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+                launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+            }
+            browser = await puppeteer.launch(launchOptions);
             const page = await browser.newPage();
             
             await page.setViewport({ width: 1122, height: 793, deviceScaleFactor: 2 });
