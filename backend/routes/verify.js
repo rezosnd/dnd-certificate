@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const sql = require('../config/db');
 
+const WINNER_TEAMS = require('../config/winners');
+
 router.get('/:id', async (req, res) => {
     try {
         const { id } = req.params;
@@ -14,12 +16,16 @@ router.get('/:id', async (req, res) => {
         }
 
         const user = users[0];
+        const winnerInfo = WINNER_TEAMS[user.email.toLowerCase()];
 
         return res.status(200).json({
             valid: true,
             name: user.name,
             certificateId: user.certificateId,
-            event: "Decode & Dominate 2.0"
+            event: "Decode & Dominate 2.0",
+            isWinner: !!winnerInfo,
+            teamName: winnerInfo ? winnerInfo.team : null,
+            rank: winnerInfo ? winnerInfo.rankText : null
         });
 
     } catch (error) {

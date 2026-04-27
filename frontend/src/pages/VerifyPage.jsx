@@ -64,6 +64,18 @@ const VerifyPage = () => {
                         <div className="label">Participant Name</div>
                         <div className="val">{data.name}</div>
                     </div>
+                    {data.isWinner && (
+                        <>
+                            <div className="row">
+                                <div className="label">Team Name</div>
+                                <div className="val" style={{ color: '#ff2e63', fontWeight: 800 }}>TEAM {data.teamName}</div>
+                            </div>
+                            <div className="row">
+                                <div className="label">Achievement</div>
+                                <div className="val" style={{ fontWeight: 800 }}>{data.rank}</div>
+                            </div>
+                        </>
+                    )}
                     <div className="row">
                         <div className="label">Event Name</div>
                         <div className="val">{data.event}</div>
