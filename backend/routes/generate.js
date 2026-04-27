@@ -471,10 +471,19 @@ async function handleGenerate(req, res) {
         let browser;
         try {
             const isProd = process.env.NODE_ENV === 'production';
+            const LINUX_CHROME_PATHS = [
+                '/usr/bin/chromium-browser',
+                '/usr/bin/chromium',
+                '/usr/bin/google-chrome',
+                '/usr/bin/google-chrome-stable',
+                '/snap/bin/chromium',
+            ];
+            const findLinuxExecutable = () => LINUX_CHROME_PATHS.find(p => fs.existsSync(p)) || null;
+            const executablePath = process.env.PUPPETEER_EXECUTABLE_PATH ||
+                (isProd ? findLinuxExecutable() : 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe');
             browser = await puppeteer.launch({
-                // On production (Linux), we let Puppeteer find its own Chromium or use the path provided by the host
-                executablePath: process.env.PUPPETEER_EXECUTABLE_PATH || (isProd ? null : 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe'),
-                headless: 'new',
+                executablePath,
+                headless: true,
                 args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
             });
             const page = await browser.newPage();

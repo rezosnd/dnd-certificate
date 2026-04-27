@@ -13,7 +13,7 @@ const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:5173';
 app.use(cors({
     origin: [FRONTEND_URL, 'https://dnd.veritasco.tech', 'http://localhost:5173', 'http://localhost:5174'],
     credentials: true,
-    exposedHeaders: ['x-participant-name', 'x-certificate-id', 'X-Participant-Name', 'X-Certificate-ID', 'Content-Disposition', 'content-disposition']
+    exposedHeaders: ['x-participant-name', 'x-certificate-id', 'X-Participant-Name', 'X-Certificate-ID', 'Content-Disposition', 'content-disposition', 'x-is-winner', 'x-team-name', 'x-rank']
 }));
 app.use(express.json());
 
