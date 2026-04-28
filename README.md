@@ -2,7 +2,7 @@
 
 > **The official high-fidelity digital certificate generation and verification platform for the Decode & Dominate 2.0 finale.**
 
-[![Version](https://img.shields.io/badge/version-1.0.0-black.svg?style=flat-square)](#)
+[![Version](https://img.shields.io/badge/version-1.1.0-black.svg?style=flat-square)](#)
 [![Tech Stack](https://img.shields.io/badge/stack-MERN--PostgreSQL-black.svg?style=flat-square)](#)
 [![Design](https://img.shields.io/badge/design-Premium--Minimalist-white.svg?style=flat-square)](#)
 
