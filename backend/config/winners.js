@@ -25,8 +25,8 @@ const WINNER_TEAMS = {
     '241551018@kiit.ac.in': { team: 'ASTROPHILE', rank: 'TOP 5 FINALIST', rankText: 'Top 5', badgeClass: 'bg-bronze' },
     '2505390@kiit.ac.in': { team: 'ASTROPHILE', rank: 'TOP 5 FINALIST', rankText: 'Top 5', badgeClass: 'bg-bronze' },
     '2506002@kiit.ac.in': { team: 'ASTROPHILE', rank: 'TOP 5 FINALIST', rankText: 'Top 5', badgeClass: 'bg-bronze' },
-    'rehansuman41008@gmail.com': { team: 'JAGANNATHAN', rank: 'TOP 5 FINALIST', rankText: 'Top 5', badgeClass: 'bg-bronze' },
-    '2306132@kiit.ac.in': { team: 'JAGANNATHAN', rank: 'TOP 5 FINALIST', rankText: 'Top 5', badgeClass: 'bg-bronze' },
+    'rehansuman41008@gmail.com': { team: 'JAGANNATH', rank: 'TOP 5 FINALIST', rankText: 'Top 5', badgeClass: 'bg-bronze' },
+    '2306132@kiit.ac.in': { team: 'JAGANNATH', rank: 'TOP 5 FINALIST', rankText: 'Top 5', badgeClass: 'bg-bronze' },
 };
 
 module.exports = WINNER_TEAMS;
