@@ -14,7 +14,7 @@
 - **🛡️ QR Verification**: Each certificate includes a unique ID and QR code for instant authenticity checks.
 - **💼 LinkedIn Integration**: One-click sharing with professional pre-written post templates and auto-mentions for **KIIT** and **VeritasCo**.
 - **⚡ Performance Optimized**: Served with high-fidelity **AVIF** image assets for ultra-fast load times.
-- **📱 Responsive UI**: A premium, mobile-first experience designed for the modern web.
+- **📱 Responsive UI**: A premium, mobile-first experience designed for the modern webapp.
 
 ---
 
